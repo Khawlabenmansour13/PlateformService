@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PlateformService.Dtos;
+using PlateformService.Models;
 using PlateformService.Repositories;
 
 namespace PlateformService.Controllers
@@ -39,8 +40,18 @@ namespace PlateformService.Controllers
             }
             return NotFound();
 
+            
         }
+        [HttpPost]
+        public ActionResult<PlateformReadDto> CreatePlatform(PlateformCreateDto plateformCreateDto)
+        {
+            var plateformModel = _mapper.Map<Plateform>(plateformCreateDto);
+            _repository.CreatePlatform(plateformModel);
+            _repository.SaveChanges();
+            var plateformReadDto = _mapper.Map<PlateformReadDto>(plateformModel);
+            return CreatedAtRoute(nameof(GetPlatformById), new { Id = plateformReadDto.Id }, plateformReadDto);
 
+        }
 
 
 
